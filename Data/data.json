@@ -1,0 +1,26 @@
+[
+  {
+    "placeImage": "assets/cay_day_leo.jpg",
+    "placeName": "The Hawkers",
+    "placeItems": ["Burgers","Chinese","Fast Food","Italian","Juice"],
+    "minOrder": 20
+  },
+  {
+    "placeImage": "assets/cay_loai_to.jpg",
+    "placeName": "Flipping Noodles",
+    "placeItems": ["Burgers","Chinese","Fast Food","Italian","Juice"],
+    "minOrder": 50
+  },
+  {
+    "placeImage": "assets/cay_loai_to.jpg",
+    "placeName": "Pizza Hut",
+    "placeItems": ["Pizza","Chinese","Fast Food","Italian","Juice"],
+    "minOrder": 20
+  },
+  {
+    "placeImage": "assets/cay_loai_to.jpg",
+    "placeName": "Blue Hill",
+    "placeItems": ["Burgers","Chinese","Fast Food","Italian","Juice"],
+    "minOrder": 40
+  }
+]
