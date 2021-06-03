@@ -1,20 +1,22 @@
 import 'dart:async';
 
+import 'package:first_app/models/user.dart';
+import 'package:first_app/show_products_page/SearchItem.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class SearchBox extends StatefulWidget {
-  const SearchBox({Key key, this.text}) : super(key: key);
-
+  User user;
   final String text;
   @override
   _SearchBoxState createState() => _SearchBoxState();
+  SearchBox(this.user, this.text);
 }
 
 class _SearchBoxState extends State<SearchBox> {
   static const historyLength = 6;
-  List<String> _searchHistory = ["linh","hoai","tu", "diu", "bao", "linh khiem"];
+  List<String> _searchHistory = [];
 
   List<String> filterSearchTerms({
     String filter,
@@ -67,7 +69,16 @@ class _SearchBoxState extends State<SearchBox> {
     controller.dispose();
     super.dispose();
   }
-
+  String changeInput(String stringInput){
+    String selected = stringInput;
+    selected = selected.toLowerCase();
+    List<String> splitString = selected.split(' ');
+    String example = "";
+    splitString.forEach((String element) {
+      example += element[0].toUpperCase() + element.substring(1,element.length) +" ";
+    });
+    return example.substring(0,example.length-1);
+  }
   @override
   Widget build(BuildContext context) {
     return FloatingSearchBar(
@@ -97,7 +108,11 @@ class _SearchBoxState extends State<SearchBox> {
                 addSearchTerm(query);
                 selectedTerm = query;
               });
+              String queryInput = changeInput(selectedTerm);
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => SearchItem(queryString: queryInput, user: widget.user,)));
               controller.close();
+
             },
             builder: (context, transition) {
               return ClipRRect(
@@ -125,6 +140,9 @@ class _SearchBoxState extends State<SearchBox> {
                                   addSearchTerm(controller.query);
                                   selectedTerm = controller.query;
                                 });
+                                String queryInput = changeInput(selectedTerm);
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => SearchItem(queryString: queryInput, user: widget.user,)));
                                 controller.close();
                               });
                         } else {
@@ -150,6 +168,9 @@ class _SearchBoxState extends State<SearchBox> {
                                           putSearchTermFirst(term);
                                           selectedTerm = term;
                                         });
+                                        String queryInput = changeInput(selectedTerm);
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) => SearchItem(queryString: queryInput, user: widget.user,)));
                                         controller.close();
                                       },
                                     ))

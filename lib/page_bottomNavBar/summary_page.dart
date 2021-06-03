@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/NewsFeed/summary_news.dart';
 import 'package:first_app/account/account_page.dart';
@@ -12,18 +13,38 @@ import 'package:first_app/wallet/wallet_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'liked_page.dart';
-
+import 'package:first_app/models/shippingInfor.dart';
 class SummaryPage extends StatefulWidget {
   User user;
-
   SummaryPage({this.user});
-
   @override
   _SummaryPageState createState() => _SummaryPageState();
 }
 
 class _SummaryPageState extends State<SummaryPage> {
   var _currentIndex = 0;
+  bool viewResult = false;
+  List<shippingInfor> listAddress = new List();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Database().getAllAddress(widget.user.getUid()).then((QuerySnapshot docs){
+      var count = docs.documents.length;
+      if(docs.documents.isNotEmpty){
+        docs.documents.forEach((element) {
+          listAddress.add(shippingInfor.fromJson(element.data));
+        });
+      }
+      if(listAddress.length == count){
+        widget.user.listShippingInfor = listAddress;
+        setState(() {
+          this.viewResult = true;
+        });
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -44,12 +65,12 @@ class _SummaryPageState extends State<SummaryPage> {
     var height = (_currentIndex == 0 ? 117.0 : 100.0);
 
 
-    return Scaffold(
+    return this.viewResult ? Scaffold(
 
       body: bodyTabs[_currentIndex],
       bottomNavigationBar: BottomNavBar(),
 
-    );
+    ): Loading();
   }
 
   BottomNavBar() {

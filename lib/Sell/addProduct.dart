@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:first_app/account/EditAddress.dart';
 import 'package:first_app/login_reg_pages/loading.dart';
 import 'package:first_app/models/plant.dart';
 import 'package:first_app/models/product.dart';
@@ -36,6 +37,7 @@ class _AddProductState extends State<AddProduct>{
   String height='';
   String amount='';
   String category = '';
+  String address;
   DateTime date=DateTime.now();
   bool enableFeature = false;
   final picker = ImagePicker();
@@ -45,9 +47,12 @@ class _AddProductState extends State<AddProduct>{
   String quantityInStock='';
   List<Plants> listPlants = new List();
   bool viewResult = false;
-
+  List<String> listCities = ['An Giang', 'Bà Rịa – Vũng Tàu', 'Bắc Giang', 'Bắc Kạn','Bạc Liêu', 'Bắc Ninh',
+  'Bến Tre', 'Bình Định','Bình Dương','Bình Phước','Bình Thuận','Cà Mau','Cần Thơ','Cao Bằng','Đà Nẵng','Đắk Lắk','Đắk Nông','Điện Biên','Đồng Nai','Đồng Tháp','Gia Lai','Hà Giang','Hà Nam','Hà Nội','Hà Tĩnh','Hải Dương','Hải Phòng','Hậu Giang','Hòa Bình','Hưng Yên','Khánh Hòa','Kiên Giang',
+  'Kon Tum','Lai Châu','Lâm Đồng','Lạng Sơn','Lào Cai','Long An','Nam Định','Nghệ An','Ninh Bình','Ninh Thuận','Phú Thọ','Phú Yên','Quảng Bình','Quảng Nam','Quảng Ngãi','Quảng Ninh','Quảng Trị','Sóc Trăng','Sơn La','Tây Ninh','Thái Bình','Thái Nguyên','Thanh Hóa','Thừa Thiên Huế','Tiền Giang','TP Hồ Chí Minh','Trà Vinh','Tuyên Quang','Vĩnh Long','Vĩnh Phúc','Yên Bái',
+  ];
   whenCompleted(){
-    if(this.title!='' && this.description!='' && this.specificationProduct!=null && this.amount!='' && this.height!='' && this.plant!=null && this.transportProduct!=null && this.quantityInStock != ''){
+    if(this.title!='' && this.description!='' && this.specificationProduct!=null && this.amount!='' && this.height!='' && this.plant!=null && this.transportProduct!=null && this.quantityInStock != '' && this.address!=null){
       return true;
     }
     return false;
@@ -231,6 +236,7 @@ class _AddProductState extends State<AddProduct>{
                       context,
                       MaterialPageRoute(builder: (context) => Specification()),
                     ).then((value){
+                      if(value!=null)
                       setState(() {
                         this.specificationProduct = value;
                       });
@@ -388,6 +394,7 @@ class _AddProductState extends State<AddProduct>{
                     context,
                     MaterialPageRoute(builder: (context) => Transport()),
                   ).then((value){
+                    if(value!=null)
                     setState(() {
                       this.transportProduct = value;
                     });
@@ -448,6 +455,56 @@ class _AddProductState extends State<AddProduct>{
             ),
 
             SizedBox(height: 5,),
+
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: <Widget>[
+                        Icon(Icons.class__outlined),
+                        Text(
+                          ' Địa chỉ shop ',
+                          style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600),
+                        ),
+                    SizedBox(height: 10),
+                    Expanded(child: new InputDecorator(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            borderSide: BorderSide(color: Colors.black87, )
+                        ),
+                        contentPadding: EdgeInsets.all(10),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child:  DropdownButton(
+                          hint: Text('Select'),
+                          value: address,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 20,
+                          elevation: 16,
+                          isExpanded: true,
+                          isDense: true,
+                          //underline: ,
+                          style: const TextStyle(color: Colors.black, fontSize: 16,fontWeight: FontWeight.w500),
+                          onChanged: (newValue){
+                            setState(() {
+                              address=newValue;
+                            });
+                          },
+
+                          items: listCities
+                              .map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value.toString(),
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),)
+                  ],
+                )
+            ),
+            SizedBox(height: 5,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -485,7 +542,8 @@ class _AddProductState extends State<AddProduct>{
                         });
                       }
                     });
-                    Product product = new Product(productName: this.title, takeCareOfTree: this.description, longevity: this.specificationProduct.age, origin: this.specificationProduct.origin, temperature: this.specificationProduct.temperature, theAmountOfWater: this.specificationProduct.theAmountOfWater,price: this.amount, height: this.height, plantID: this.plant, weight: this.transportProduct.weight, fastDelivery: this.transportProduct.fastDelivery, quantityInStock: this.quantityInStock,preOrder: this.enableFeature, address: widget.user.address, accountID:  widget.user.uid, category: this.category);
+                    Product product = new Product(productName: this.title, takeCareOfTree: this.description, longevity: this.specificationProduct.age, origin: this.specificationProduct.origin, temperature: this.specificationProduct.temperature, theAmountOfWater: this.specificationProduct.theAmountOfWater,price: this.amount, height: this.height, plantID: this.plant, weight: this.transportProduct.weight, fastDelivery: this.transportProduct.fastDelivery, quantityInStock: this.quantityInStock,preOrder: this.enableFeature, address: this.address, accountID:  widget.user.uid, category: this.category);
+                    String image = "https://ak.picdn.net/shutterstock/videos/2599205/thumb/1.jpg";
                     ProductService().createProduction(product).then((value){
                       if(_image.length>0){
                         var  index = 0;

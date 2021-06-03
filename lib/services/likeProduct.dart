@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:first_app/services/productService.dart';
 
 class likeProduct{
   Firestore _firestore = new Firestore();
@@ -27,6 +28,7 @@ class likeProduct{
           {
             'productID': productID,
           });
+      ProductService().updateLike(productID, true);
       retVal = "success";
     }catch(e){
 
@@ -38,6 +40,7 @@ class likeProduct{
     try{
       await _firestore.collection("users").document(accountID).collection("productLiked")
           .document(productID).delete();
+      ProductService().updateLike(productID, false);
       retVal = "success";
     }catch(e){
     }

@@ -20,7 +20,7 @@ class _ShowItemPageState extends State<ShowItemPage> {
     return Scaffold(
       appBar: AppBar(
           toolbarHeight: 75,
-          title: SearchBox(text: 'NameGroupOfTree'),
+          title: SearchBox(widget.user, 'NameGroupOfTree'),
           leadingWidth: 20,
           centerTitle: true,
           backgroundColor: Color(0xFF407C5A),

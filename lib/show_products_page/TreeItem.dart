@@ -1,6 +1,7 @@
 import 'package:first_app/models/product.dart';
 import 'package:first_app/models/user.dart';
 import 'package:first_app/services/likeProduct.dart';
+import 'package:first_app/services/productService.dart';
 import 'package:first_app/show_products_page/detail_item_4.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _TreeItemState extends State<TreeItem> {
       child: Container(
         child: InkWell(
           onTap: (){
+            ProductService().updateWatched(widget.product.productID, widget.product.watched);
             Navigator.push(
               context, MaterialPageRoute(builder: (context) => DetailItem(product: widget.product,user: widget.user,))
             );
@@ -95,7 +97,7 @@ class _TreeItemState extends State<TreeItem> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      widget.product.price,
+                                      widget.product.price+'đ',
                                       style: TextStyle(color: Colors.green[900]),
                                     ),
                                     RichText(
@@ -105,7 +107,7 @@ class _TreeItemState extends State<TreeItem> {
                                           TextSpan(
                                             text: 'Đã bán ',
                                           ),
-                                          TextSpan(text: widget.product.quantityInStock),
+                                          TextSpan(text: widget.product.sold.toString()),
                                         ]))
                                   ],
                                 ),
@@ -114,20 +116,19 @@ class _TreeItemState extends State<TreeItem> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      IconButton(
-                                          alignment: Alignment.centerLeft,
-                                          icon: (setImage),
-                                          onPressed: () {
-                                            setState(() {
-                                              this.isFavorited = !this.isFavorited;
-                                            });
-                                            if(this.isFavorited){
-                                              likeProduct().addFavoriteProduct(widget.user.getUid(), widget.product.productID);
-                                            }else{
-                                              likeProduct().deleteFavoriteProduct(widget.user.getUid(), widget.product.productID);
-                                            }
-
-                                          }),
+                                      Row(
+                                        children: <Widget>[
+                                          Image.asset(
+                                            "assets/gold_star.png",
+                                            width: 16,
+                                          ),
+                                          (widget.product.rating!=0) ? Text(" " + widget.product.rating.toString(), style: TextStyle(
+                                            fontSize: 12,
+                                          ),) : Text(" null" , style: TextStyle(
+                                            fontSize: 12,
+                                          ),),
+                                        ],
+                                      ) ,
                                       //isFavorited là biến bool, xét xem ng đó đã tym sp đó chưa
                                       Row(
                                         children: <Widget>[

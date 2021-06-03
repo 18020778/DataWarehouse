@@ -46,26 +46,14 @@ class uploadFile {
   }
 
 
-  Future uploadImageProduct(String productID, File _imageFile, int index) async {
-    // dau tien la phai lay cai so luong r la chia no ra
+  Future<String> uploadImageProduct(String productID, File _imageFile, int index) async {
     var number = 0;
-    // get
-    // await ProductService().getProductByID(productID).then((
-    //     QuerySnapshot value) {
-    //   if (value.documents.isNotEmpty) {
-    //     value.documents.forEach((element) {
-    //       number++;
-    //     });
-    //   }
-    // });
-    print("index" +index.toString());
     StorageReference reference = FirebaseStorage.instance.ref().child(
         "productImage/$productID/image_$index"
     );
     StorageUploadTask uploadTask = reference.putFile(_imageFile);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String downloadImage = await taskSnapshot.ref.getDownloadURL();
-    //CollectionReference ref = Firestore.instance.collection("imageProduct");
     CollectionReference ref = Firestore.instance.collection("products").document(productID).collection("imageProduct");
     DocumentReference document = ref.document();
     document.setData({

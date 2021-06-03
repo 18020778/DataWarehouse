@@ -1,4 +1,4 @@
-import 'package:first_app/buy_products/map/application_bloc.dart';
+/*import 'package:first_app/buy_products/map/application_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -155,3 +155,5 @@ class _screenState extends State<screen> {
         zoom: 14)));
   }
 }
+
+ */

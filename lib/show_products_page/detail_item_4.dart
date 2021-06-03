@@ -3,6 +3,7 @@ import 'package:first_app/login_reg_pages/loading.dart';
 import 'package:first_app/models/product.dart';
 import 'package:first_app/models/user.dart';
 import 'package:first_app/services/likeProduct.dart';
+import 'package:first_app/services/purchase_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,15 +18,16 @@ class DetailItem extends StatefulWidget {
   DetailItem({this.product, this.user});
 }
 class _DetailItemState extends State<DetailItem> {
-  bool isFavorited;
+  bool isFavorited= false;
   bool viewResult = false;
   @override
   void initState() {
     // xem xem cais nayf minhf cos like hay khong
     likeProduct().isLiked(widget.user.uid, widget.product.productID).then((value){
+      if(value!=null)
       setState(() {
         this.isFavorited = value;
-        this.viewResult =  true;
+        this.viewResult=true;
       });
     });
 
@@ -334,6 +336,7 @@ class _DetailItemState extends State<DetailItem> {
                             ),
                           ),
                           SizedBox(height: 8,),
+
                           Column(
                               children: [
                             Padding(
@@ -345,8 +348,11 @@ class _DetailItemState extends State<DetailItem> {
                                   'Mua ngay',
                                   style: TextStyle(fontSize: 16),
                                 ),
+
+
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => showCart()));
+                                  PurchaseService().addProductToTheCart(widget.product.productID, 1, widget.user.uid, widget.product.accountID, widget.product.listImage.last, widget.product.productName, widget.product.price);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => showCart(widget.user)));
                                 },
                                 splashColor: Colors.black,
                                 shape: new RoundedRectangleBorder(
@@ -376,12 +382,31 @@ class _DetailItemState extends State<DetailItem> {
                                         fit: BoxFit.cover,
                                       ),
                                       onPressed: () {
+                                        // adding product to them cart
+                                        PurchaseService().addProductToTheCart(widget.product.productID, 1, widget.user.uid, widget.product.accountID, widget.product.listImage.last, widget.product.productName, widget.product.price);
+                                        // Announcement of adding products to the cart
                                         showAlert(context);
                                       },
                                     ),
+
                                   ]),
                             ),
+
                           ]),
+                          SizedBox(height: 8,),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: (widget.product.rating !=null ) ? Text("Đánh giá:  " +
+                              widget.product.rating.toString() + " ☆",
+                              style:
+                              TextStyle(fontSize: 16, color: Colors.white),
+                            ): Text(
+                              "Chưa có đánh giá",
+                              style:
+                              TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                          ),
+
                         ]),
                   ),
           ]),
@@ -409,7 +434,9 @@ class _DetailItemState extends State<DetailItem> {
                 ],
               ));
   }
+  addProductToCart(){
 
+  }
   showAlert(BuildContext context) {
     AlertDialog alert = AlertDialog(
       title: Image.asset("assets/checkIcon.png", width: 50, height: 50,),

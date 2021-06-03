@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:first_app/models/shippingInfor.dart';
 class User{
   String uid;
   String userName;
@@ -10,9 +11,12 @@ class User{
   String gender;
   Timestamp accountCreated;
   Timestamp dob;
-  String address;
+  List<shippingInfor> listShippingInfor;
 
   // getter and setter
+  addListShippingInfor(shippingInfor addInfor){
+    this.listShippingInfor.add(addInfor);
+  }
   Timestamp getAccountCreated(){
     return this.accountCreated;
   }
@@ -59,4 +63,5 @@ class User{
   void setGender(String gender){
     this.gender = gender;
   }
+
 }

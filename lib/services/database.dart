@@ -17,7 +17,6 @@ class Database{
           'dob' : user.dob,
           'email': user.email,
           'urlImage' : "https://i.dlpng.com/static/png/6866112_preview.png",
-          'address': user.address,
           'accountCreated': Timestamp.now(),
         }
       );
@@ -35,7 +34,6 @@ class Database{
         'gender' : user.gender,
         'dob' : user.dob,
         'email': user.email,
-        'address':user.address,
       });
     }catch(e){
       print(e);
@@ -62,13 +60,62 @@ class Database{
          retVal.dob = _docSnapshot.data["dob"];
          retVal.gender = _docSnapshot.data["gender"];
          retVal.urlImage  = _docSnapshot.data["urlImage"];
-         retVal.address = _docSnapshot.data['address'];
          return retVal;
        }
     }catch(e) {
       print(e);
     }
   }
+
+  // addAddress
+  Future<String> addAddress(String uid, String address, String phoneNumber, String name) async{
+    String ret= 'success';
+    try{
+      CollectionReference ref = Firestore.instance.collection("users").document(uid).collection("delivers");
+      DocumentReference document = ref.document();
+      document.setData({
+        'uid': document.documentID,
+        'address' : address,
+        'phoneNumber': phoneNumber,
+        'name': name
+      });
+      ret=document.documentID.toString();
+    }catch(e){
+      ret = e.toString();
+    }
+    return ret;
+  }
+  // getAllAddress
+  getAllAddress(String uid) {
+    return Firestore.instance.collection("users").document(uid).collection("delivers").getDocuments();
+  }
+  // update
+  Future<String> updateDAddress(String userUid,String deliverID, String address, String phoneNumber, String name) async{
+    String ret= 'success';
+    try{
+      _firestore.collection("users").document(userUid).collection("delivers").document(deliverID).updateData({
+        'address' : address,
+        'phoneNumber': phoneNumber,
+        'name': name
+      });
+
+    }catch(e){
+      ret = e.toString();
+    }
+    return ret;
+  }
+
+  // delete
+  Future<String> deleteDeliver(String uid, String documentID) async{
+    try{
+      _firestore.collection("users").document(uid).collection("delivers").document(documentID).delete().then((value){
+        return "Deleted";
+      });
+    }catch(e){
+      return e.toString();
+    }
+  }
+  // delete User
   Future<String> deleteUser(String uid) async{
     
     try{
@@ -79,5 +126,8 @@ class Database{
     }catch(e){
       return e.toString();
     }
+  }
+  getUser(String uid){
+    return _firestore.collection('users').where('uid',  isEqualTo: uid).getDocuments();
   }
 }

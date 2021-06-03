@@ -24,8 +24,15 @@ class Product {
   Timestamp created;
   String category;
   List<String> listImage;
+  int liked;
+  int watched;
+  int sold;
+  double rating;
   setlistImage(List<String> listImage){
     this.listImage = listImage;
+  }
+  setRating(double rating){
+    this.rating = rating;
   }
   Product(
       {this.productID,
@@ -45,7 +52,10 @@ class Product {
       this.created,
       this.address,
         this.category,
-      this.accountID});
+      this.accountID,
+      this.liked,
+      this.sold,
+      this.watched,});
   factory Product.fromJson(Map<String, dynamic> json) => Product(
     productID: json['productID'],
     productName:  json['productName'],
@@ -64,7 +74,10 @@ class Product {
     created: json['created'],
     address: json['address'],
     accountID: json['accountID'],
-    category: json['category']
+    category: json['category'],
+    sold: json['sold'],
+    watched: json['watched'],
+    liked: json['liked'],
   );
 
 }

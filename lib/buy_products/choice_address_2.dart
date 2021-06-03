@@ -1,10 +1,16 @@
+import 'package:first_app/buy_products/addAddress.dart';
+import 'package:first_app/buy_products/buy_card_1.dart';
+import 'package:first_app/models/shippingInfor.dart';
+import 'package:first_app/models/user.dart';
 import 'package:flutter/material.dart';
-
+import 'addAddress.dart';
 import 'edit_address_3.dart';
 
 class ChoiceAddress extends StatefulWidget {
+  User user;
   @override
   _ChoiceAddressState createState() => _ChoiceAddressState();
+  ChoiceAddress({this.user});
 }
 
 class _ChoiceAddressState extends State<ChoiceAddress> {
@@ -37,23 +43,24 @@ class _ChoiceAddressState extends State<ChoiceAddress> {
             ),
             child: Column(
               children: [
-                AddressItem(
-                    chose: true,
-                    name: "Nguyễn Hồng Lĩnh",
-                    sdt: "08475384",
-                    diachi: "So 10, ngõ 1 Thiên Hiền, Mỹ Đình, Hà Nội"),
-                AddressItem(
-                    chose: false,
-                    name: "Nguyễn Hồng Lĩnh",
-                    sdt: "08475384",
-                    diachi: "So 10, ngõ 1 Thiên Hiền, Mỹ Đình, Hà Nội"),
-                AddressItem(
-                    chose: false,
-                    name: "Nguyễn Hồng Lĩnh",
-                    sdt: "08475384",
-                    diachi: "So 10, ngõ 1 Thiên Hiền, Mỹ Đình, Hà Nội"),
+                for(int i = 0; i< widget.user.listShippingInfor.length; i++)
+                  AddressItem(chose: false, name: widget.user.listShippingInfor[i].name,
+                  sdt: widget.user.listShippingInfor[i].phoneNumber,
+                  diachi: widget.user.listShippingInfor[i].address,
+                  documentID: widget.user.listShippingInfor[i].uid,
+                  user: widget.user,),
                 FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddAddress(user: widget.user))).then((value){
+                                if(value!=null)
+                                setState(() {
+                                  widget.user.listShippingInfor.add(value);
+                                });
+                      });
+                    },
                     color: Colors.white,
                     padding: EdgeInsets.all(15),
                     child: Row(
@@ -78,8 +85,9 @@ class AddressItem extends StatefulWidget {
   String name;
   String sdt;
   String diachi;
-
-  AddressItem({Key key, this.chose, this.name, this.sdt, this.diachi})
+  String documentID;
+  User user;
+  AddressItem({Key key, this.chose, this.name, this.sdt, this.diachi,this.documentID,  this.user})
       : super(key: key);
   @override
   _AddressItemState createState() => _AddressItemState();
@@ -100,7 +108,9 @@ class _AddressItemState extends State<AddressItem> {
                       setState(() {
                         widget.chose = true;
                       });
-                      Navigator.of(context).pop();
+                      shippingInfor item = widget.user.listShippingInfor.firstWhere((element) => element.uid == widget.documentID);
+                      Navigator.pop(context);
+                      Navigator.pop(context, item);
                     },
                     child: Text(
                       "OK",
@@ -142,10 +152,13 @@ class _AddressItemState extends State<AddressItem> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              settings: RouteSettings(name: "/choiceAddress"),
                               builder: (context) => EditAddress(
                                   name: widget.name,
                                   sdt: widget.sdt,
-                                  diachi: widget.diachi)));
+                                  diachi: widget.diachi,
+                              documentID : widget.documentID,
+                              user: widget.user,)));
                     },
                     child: Text(
                       "Sửa",
